@@ -1,4 +1,4 @@
-package CosineMatrix;
+package CosineMultiRating;
 
 import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.io.Text;
@@ -14,7 +14,7 @@ import java.util.List;
 /**
  * Mapper2的目的是计算出矩阵每个位置的值
  */
-public class Mapper2 extends Mapper<LongWritable, Text, Text, Text> {
+public class Mapper4 extends Mapper<LongWritable, Text, Text, Text> {
 
     private Text outKey = new Text();
     private Text outValue = new Text();
@@ -34,13 +34,12 @@ public class Mapper2 extends Mapper<LongWritable, Text, Text, Text> {
     @Override
     protected void setup(Context context) throws IOException, InterruptedException {
         //通过输入流将全局缓存中的右侧矩阵读入List<String>中
-        FileReader fr = new FileReader("ItemUserScore1");
+        FileReader fr = new FileReader("itemUserScore2");
         BufferedReader br = new BufferedReader(fr);
 
         //每一行的格式是: 行 tab 列_值,列_值,列_值,列_值
         String line = null;
         while ((line = br.readLine()) != null) {
-            System.out.println(line);
             cacheList.add(line);
         }
         fr.close();
@@ -61,35 +60,16 @@ public class Mapper2 extends Mapper<LongWritable, Text, Text, Text> {
     protected void map(LongWritable key, Text value, Context context) throws IOException, InterruptedException {
         //行
         String row_matrix1 = value.toString().split("\\t")[0];
-        System.out.println(value.toString());
         //列
         String[] column_value_array_matrix1 = value.toString().split("\\t")[1].split(",");
-
-        //计算左侧矩阵行的空间距离
-        double denominator1 = 0;
-        for (String column_value : column_value_array_matrix1) {
-            String score = column_value.split("_")[1];
-            denominator1 += Double.valueOf(score) * Double.valueOf(score);
-        }
-        denominator1 = Math.sqrt(denominator1);
-
         for (String line : cacheList) {
             //右侧矩阵的行
             //格式:行 tab 列_值,列_值,列_值,列_值,列_值
             String row_matrix2 = line.split("\\t")[0];
             //右侧矩阵的列
             String[] column_value_array_matrix2 = line.split("\\t")[1].split(",");
-
-            //计算右侧矩阵行的空间距离
-            double denominator2 = 0;
-            for (String column_value : column_value_array_matrix2) {
-                String score = column_value.split("_")[1];
-                denominator2 += Double.valueOf(score) * Double.valueOf(score);
-            }
-            denominator2 = Math.sqrt(denominator2);
-
             //矩阵两行相乘的结果
-            int numerator = 0;
+            double result = 0;
             //遍历左矩阵每一行的每一列
             for (String column_value_matrix1 : column_value_array_matrix1) {
                 //左矩阵列号
@@ -100,21 +80,16 @@ public class Mapper2 extends Mapper<LongWritable, Text, Text, Text> {
                 for (String column_value_matrix2 : column_value_array_matrix2) {
                     if (column_matrix1.equals(column_value_matrix2.split("_")[0])) {
                         String value_matrix2 = column_value_matrix2.split("_")[1];
-                        numerator += Integer.valueOf(value_matrix1) * Integer.valueOf(value_matrix2);
+                        result += Double.valueOf(value_matrix1) * Double.valueOf(value_matrix2);
                     }
                 }
             }
-            double cos = numerator / (denominator1 * denominator2);
-            if (cos == 0) {
+            if (result == 0) {
                 continue;
             }
-            System.out.println("####################");
-            System.out.println(cos);
-            System.out.println("####################");
             //result是结果矩阵中的某元素，坐标为   行：row_matrix1 , 列:row_matrix2(因为右矩阵已经转置)
             outKey.set(row_matrix1);
-            outValue.set(row_matrix2 + "_" + numerator);
-            outValue.set(row_matrix2 + "_" + df.format(cos));
+            outValue.set(row_matrix2 + "_" + df.format(result));
             //输出格式 key:行  value:列_值
             context.write(outKey, outValue);
         }

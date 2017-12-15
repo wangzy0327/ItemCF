@@ -19,14 +19,15 @@ public class MR1 {
     private static String outPath = "/user/wzy/ItemCF/step1_output";
     //hdfs文件地址
     private static String hdfs = "hdfs://localhost:9000";
-    public static int run(){
+
+    public static int run() {
         try {
             //创建job作业的配置
             Configuration conf = new Configuration();
             //设置hdfs地址
-            conf.set("fs.defaultFS",hdfs);
+            conf.set("fs.defaultFS", hdfs);
             //创建一个Job实例
-            Job job = Job.getInstance(conf,"step1");
+            Job job = Job.getInstance(conf, "step1");
             //设置job的主类
             job.setJarByClass(MR1.class);
             //设置Map,Reduce的类型
@@ -42,16 +43,16 @@ public class MR1 {
             FileSystem fs = FileSystem.get(conf);
             //设置输入输出路径
             Path inputPath = new Path(inPath);
-            if(fs.exists(inputPath)){
+            if (fs.exists(inputPath)) {
                 //将输入路径添加到job中
-                FileInputFormat.addInputPath(job,inputPath);
+                FileInputFormat.addInputPath(job, inputPath);
             }
             Path outputPath = new Path(outPath);
             //如果路径存在则删除,否则不删除
-            fs.delete(outputPath,true);
+            fs.delete(outputPath, true);
             //将输出路径添加到job中
-            FileOutputFormat.setOutputPath(job,outputPath);
-            return job.waitForCompletion(true)?1:-1;
+            FileOutputFormat.setOutputPath(job, outputPath);
+            return job.waitForCompletion(true) ? 1 : -1;
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -66,9 +67,9 @@ public class MR1 {
     public static void main(String[] args) {
         int result = 0;
         result = new MR1().run();
-        if(result == 1){
+        if (result == 1) {
             System.out.println("step1执行成功!");
-        }else{
+        } else {
             System.out.println("step1执行失败");
         }
     }

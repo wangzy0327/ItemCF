@@ -1,21 +1,17 @@
-package CosineMatrix;
-
+package TransposeMatrix;
 
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Reducer;
 
 import java.io.IOException;
 
-/**
- * Reducer2的目的是连接字符串(将结果连接在一起)
- */
-public class Reducer2 extends Reducer<Text, Text, Text, Text> {
+public class Reducer3 extends Reducer<Text, Text, Text, Text> {
     private Text outKey = new Text();
     private Text outValue = new Text();
 
     /**
-     * key:行号
-     * value:[列_值,列_值,列_值,列_值]
+     * key:列号
+     * value:[行号_值,行号_值,行号_值...]
      *
      * @param key
      * @param values
@@ -25,18 +21,18 @@ public class Reducer2 extends Reducer<Text, Text, Text, Text> {
      */
     @Override
     protected void reduce(Text key, Iterable<Text> values, Context context) throws IOException, InterruptedException {
+        String column = key.toString();
         StringBuilder sb = new StringBuilder();
         for (Text value : values) {
+            //text:行号_值
             sb.append(value.toString() + ",");
         }
         String line = null;
         if (sb.toString().endsWith(",")) {
             line = sb.substring(0, sb.length() - 1);
         }
-        System.out.println(line);
-        outKey.set(key.toString());
+        outKey.set(column);
         outValue.set(line);
         context.write(outKey, outValue);
     }
 }
-

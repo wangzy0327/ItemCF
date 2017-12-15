@@ -6,13 +6,14 @@ import org.apache.hadoop.mapreduce.Mapper;
 
 import java.io.IOException;
 
-public class Mapper1 extends Mapper<LongWritable,Text,Text,Text>{
+public class Mapper1 extends Mapper<LongWritable, Text, Text, Text> {
     private Text outKey = new Text();
     private Text outValue = new Text();
 
     /**
      * key:1  2  ...
      * value:A,1,1    C,3,5   ...
+     *
      * @param key
      * @param value
      * @param context
@@ -26,7 +27,7 @@ public class Mapper1 extends Mapper<LongWritable,Text,Text,Text>{
         String itemId = values[1];
         String score = values[2];
         outKey.set(itemId);
-        outValue.set(userId+"_"+score);
-        context.write(outKey,outValue);
+        outValue.set(userId + "_" + score);
+        context.write(outKey, outValue);
     }
 }
