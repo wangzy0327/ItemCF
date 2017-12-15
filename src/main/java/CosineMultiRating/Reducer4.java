@@ -1,5 +1,4 @@
-package CosineMatrix;
-
+package CosineMultiRating;
 
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Reducer;
@@ -9,7 +8,7 @@ import java.io.IOException;
 /**
  * Reducer2的目的是连接字符串(将结果连接在一起)
  */
-public class Reducer2 extends Reducer<Text, Text, Text, Text> {
+public class Reducer4 extends Reducer<Text, Text, Text, Text> {
     private Text outKey = new Text();
     private Text outValue = new Text();
 
@@ -33,10 +32,8 @@ public class Reducer2 extends Reducer<Text, Text, Text, Text> {
         if (sb.toString().endsWith(",")) {
             line = sb.substring(0, sb.length() - 1);
         }
-        System.out.println(line);
         outKey.set(key.toString());
         outValue.set(line);
         context.write(outKey, outValue);
     }
 }
-
