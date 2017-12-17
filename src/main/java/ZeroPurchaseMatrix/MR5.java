@@ -17,12 +17,15 @@ import java.net.URISyntaxException;
 
 public class MR5 {
     //输入文件路径
-    private static String inPath = "/user/wzy/ItemCF/step4_output";
+    //private static String inPath = "/user/wzy/ItemCF/step4_output";
+    private static String inPath = "ItemCF/step4_output";
     //输出文件路径
-    private static String outPath = "/user/wzy/ItemCF/step5_output";
+    //private static String outPath = "/user/wzy/ItemCF/step5_output";
+    private static String outPath = "ItemCF/step5_output";
     //设置缓存路径
     //这样让路径直接找输出矩阵所在的文件，它的别名才起作用
-    private static String cache = "/user/wzy/ItemCF/step1_output/part-r-00000";
+    //private static String cache = "/user/wzy/ItemCF/step1_output/part-r-00000";
+    private static String cache = "ItemCF/step1_output/part-r-00000";
     //hdfs文件地址
     private static String hdfs = "hdfs://localhost:9000";
 
