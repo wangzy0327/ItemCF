@@ -14,7 +14,8 @@ public class JobRunner {
         int status3 = -1;
         int status4 = -1;
         int status5 = -1;
-
+        //beginTime ...
+        long beginTime = System.currentTimeMillis();
         status1 = new MR1().run();
         if (status1 == 1) {
             System.out.println("Step 1 运行成功,开始运行Step 2 ......");
@@ -45,5 +46,10 @@ public class JobRunner {
         } else {
             System.out.println("Step 5 运行失败....");
         }
+        //endTime ...
+        long endTime = System.currentTimeMillis();
+        //cosTime ...
+        long cosTime = endTime - beginTime;
+        System.out.println(cosTime);
     }
 }
