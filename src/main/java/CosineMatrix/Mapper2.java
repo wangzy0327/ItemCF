@@ -73,7 +73,8 @@ public class Mapper2 extends Mapper<LongWritable, Text, Text, Text> {
         }
         denominator1 = Math.sqrt(denominator1);
 
-        for (String line : cacheList) {
+        for (int i = Integer.valueOf(row_matrix1) - 1; i < cacheList.size(); i++) {
+            String line = cacheList.get(i);
             //右侧矩阵的行
             //格式:行 tab 列_值,列_值,列_值,列_值,列_值
             String row_matrix2 = line.split("\\t")[0];
@@ -115,8 +116,59 @@ public class Mapper2 extends Mapper<LongWritable, Text, Text, Text> {
             outKey.set(row_matrix1);
             //outValue.set(row_matrix2 + "_" + numerator);
             outValue.set(row_matrix2 + "_" + df.format(cos));
+            //对称矩阵 Symmetric Matrices
+            outKey.set(row_matrix2);
+            outValue.set(row_matrix1 + "_" + df.format(cos));
             //输出格式 key:行  value:列_值
             context.write(outKey, outValue);
         }
+//        for (String line : cacheList) {
+//            //右侧矩阵的行
+//            //格式:行 tab 列_值,列_值,列_值,列_值,列_值
+//            String row_matrix2 = line.split("\\t")[0];
+//            //右侧矩阵的列
+//            String[] column_value_array_matrix2 = line.split("\\t")[1].split(",");
+//
+//            //计算右侧矩阵行的空间距离
+//            double denominator2 = 0;
+//            for (String column_value : column_value_array_matrix2) {
+//                String score = column_value.split("_")[1];
+//                denominator2 += Double.valueOf(score) * Double.valueOf(score);
+//            }
+//            denominator2 = Math.sqrt(denominator2);
+//
+//            //矩阵两行相乘的结果
+//            int numerator = 0;
+//            //遍历左矩阵每一行的每一列
+//            for (String column_value_matrix1 : column_value_array_matrix1) {
+//                //左矩阵列号
+//                String column_matrix1 = column_value_matrix1.split("_")[0];
+//                //左矩阵列值
+//                String value_matrix1 = column_value_matrix1.split("_")[1];
+//                //遍历右矩阵的每一行每一列
+//                for (String column_value_matrix2 : column_value_array_matrix2) {
+//                    if (column_matrix1.equals(column_value_matrix2.split("_")[0])) {
+//                        String value_matrix2 = column_value_matrix2.split("_")[1];
+//                        numerator += Integer.valueOf(value_matrix1) * Integer.valueOf(value_matrix2);
+//                    }
+//                }
+//            }
+//            double cos = numerator / (denominator1 * denominator2);
+//            if (cos == 0) {
+//                continue;
+//            }
+//            System.out.println("####################");
+//            System.out.println(cos);
+//            System.out.println("####################");
+//            //result是结果矩阵中的某元素，坐标为   行：row_matrix1 , 列:row_matrix2(因为右矩阵已经转置)
+//            outKey.set(row_matrix1);
+//            //outValue.set(row_matrix2 + "_" + numerator);
+//            outValue.set(row_matrix2 + "_" + df.format(cos));
+//            //对称矩阵 Symmetric Matrices
+//            outKey.set(row_matrix2);
+//            outValue.set(row_matrix1 + "_" + df.format(cos));
+//            //输出格式 key:行  value:列_值
+//            context.write(outKey, outValue);
+//        }
     }
 }
