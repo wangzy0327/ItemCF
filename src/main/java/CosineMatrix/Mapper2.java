@@ -116,11 +116,14 @@ public class Mapper2 extends Mapper<LongWritable, Text, Text, Text> {
             outKey.set(row_matrix1);
             //outValue.set(row_matrix2 + "_" + numerator);
             outValue.set(row_matrix2 + "_" + df.format(cos));
-            //对称矩阵 Symmetric Matrices
-            outKey.set(row_matrix2);
-            outValue.set(row_matrix1 + "_" + df.format(cos));
-            //输出格式 key:行  value:列_值
             context.write(outKey, outValue);
+            if (!row_matrix1.equals(row_matrix2)) {
+                //对称矩阵 Symmetric Matrices
+                outKey.set(row_matrix2);
+                outValue.set(row_matrix1 + "_" + df.format(cos));
+                //输出格式 key:行  value:列_值
+                context.write(outKey, outValue);
+            }
         }
 //        for (String line : cacheList) {
 //            //右侧矩阵的行
